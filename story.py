@@ -127,6 +127,11 @@ class Setting:
 
 class Person(Agent):
 
+    def __init__(self, name, traits, verbs, goals):
+        super().__init__(name, traits, verbs, goals)
+        where = random.choice(list(location.space))
+        where.take(self)
+
     def __str__(self):
         stuff = '\n\tinventory: ' + ''.join([i.name for i in self.inventory]) if len(self.inventory) > 0 else ''
         where = Location.str(self.container)
