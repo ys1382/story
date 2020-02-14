@@ -49,7 +49,7 @@ class Value:
         self.value = value
 
     def __str__(self):
-        return '\n\t' + self.trait.name + ':' + self.value.name
+        return self.value.name
 
 
 class Goal:
@@ -152,15 +152,11 @@ class Person(Agent):
             return lambda what: (what not in location.space) and (what != who) and (who.container == what.container)
 
 
-class Location:
+class Location(Trait):
     def __init__(self):
-        self.name = "Location"
         self.castle = Item("Castle")
         self.cave = Item("Cave")
-        self.space = [self.castle, self.cave]
-
-    def value(self):
-        return random.choice(self.space)
+        super().__init__("Location", [self.castle, self.cave])
 
     @staticmethod
     def str(where):
@@ -171,14 +167,17 @@ class Location:
         return lambda where: (where in location.space) and (who.container != where)
 
 
+alive = Trait('alive', [Item("True"), Item("False")])
+
+
 location = Location()
 go = Verb('go', Person.Go.act, Person.Go.can)
 take = Verb('take', Person.Take.act, Person.Take.can)
 princess = Item('Princess', [])
 princessInCastle = Goal(princess, location, location.castle)
-prince = Person('Prince', [], [go, take], [princessInCastle])
+prince = Person('Prince', [alive], [go, take], [princessInCastle])
 princessInCave = Goal(princess, location, location.cave)
-dragon = Person('Dragon', [], [take, go], [princessInCave])
+dragon = Person('Dragon', [alive], [take, go], [princessInCave])
 
 
 def auto():
